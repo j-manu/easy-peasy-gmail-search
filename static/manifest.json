@@ -1,0 +1,31 @@
+{
+  "name": "Easy Peasy Search For Gmail",
+  "description": "Use OpenAI GPT to convert natural language search to gmail search syntax",
+  "version": "0.1",
+  "options_page": "settings.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "scripting", "storage"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/"
+  ],
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "manifest_version": 3
+}

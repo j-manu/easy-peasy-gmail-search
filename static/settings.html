@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        font-size: 14px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Settings</h1>
+    <form id="settings-form">
+      <label for="api-key">OpenAI API Key:</label>
+      <input type="text" id="api-key" name="api_key" required />
+      <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #718096; line-height: 1.5;">
+        Generate an API Key in
+        <a href="https://platform.openai.com/account/api-keys" style="font-weight: 500; color: #3b82f6; text-decoration: none; cursor: pointer; transition: text-decoration 150ms; hover:text-decoration: underline;">
+            OpenAI User Settings
+        </a>.
+      </p>
+      
+
+      <label for="model">Choose a model:</label>
+      <select id="model" name="model" required>
+        <option value="gpt-3.5-turbo">GPT-3.5-turbo</option>
+        <option value="gpt-4">GPT-4</option>
+      </select>
+      <p
+        id="helper-text-explanation"
+        style="
+          margin-top: 0.5rem;
+          font-size: 0.875rem;
+          color: #718096;
+          line-height: 1.5;
+        "
+      >
+        GPT-4 is much more accurate. If using GPT-3.5-Turbo, you may need to use the
+        detailed prompt given below for better results
+      </p>
+
+      <label for="prompt" style="margin-top: 20px">Prompt:</label>
+      <textarea id="prompt" name="prompt" rows="15" required></textarea>
+
+      <button type="submit">Save</button>
+    </form>
+
+    <h4>You can use one of the following prompts. Click the text to copy</h4>
+
+    <textarea id="short-prompt" readonly rows="5" class="click-to-copy">
+    Using only official gmail documentation, construct gmail search syntax for the query.
+    Output only the search syntax. Do not explain.
+    Search syntax should contain quoted words only if they are quoted in the query. There should be no other quoted words in the search syntax.
+    Any words with symbols like +, - are to be used as is.
+    Do not use operators from:, to:, cc:, subject: unless specified in query.
+    date should always be specified in the format yyyy/mm/dd
+    For relative time or date, calculate from today's date.
+    </textarea>
+
+    <textarea id="detailed-prompt" rows="10" readonly class="click-to-copy">
+        Here is a list of search operators and examples that can be used for gmail searches:
+
+        Specify the sender: from:, e.g. from:amy
+        Specify a recipient: to:, e.g. to:david
+        Specify a recipient who received a copy: cc: or bcc:, e.g. cc:david
+        Words in the subject line: subject:, e.g. subject:dinner
+        Messages that match multiple terms: OR or {}, e.g. from:amy OR from:david or {from:amy from:david}
+        Remove messages from your results: -, e.g. dinner -movie
+        Find messages with words near each other: AROUND, e.g. holiday AROUND 10 vacation or "secret AROUND 25 birthday"
+        Messages that have a certain label: label:, e.g. label:friends
+        Messages that have an attachment: has:attachment, e.g. has:attachment
+        Messages with Google Drive, Docs, Sheets, or Slides attachments or links: has:drive, has:document, has:spreadsheet, has:presentation, e.g. has:drive
+        Messages with a YouTube video: has:youtube, e.g. has:youtube
+        Messages from a mailing list: list:, e.g. list:info@example.com
+        Attachments with a certain name or file type: filename:, e.g. filename:pdf or filename:homework.txt
+        Search for an exact word or phrase: "", e.g. "dinner and movie tonight"
+        Group multiple search terms together: (), e.g. subject:(dinner movie)
+        Messages in any folder, including Spam and Trash: in:anywhere, e.g. in:anywhere movie
+        Search for messages marked as important: is:important or label:important, e.g. is:important
+        Starred, snoozed, unread, or read messages: is:starred, is:snoozed, is:unread, is:read, e.g. is:read is:starred
+        Messages that include an icon of a certain color: has:yellow-star, has:blue-info, e.g. has:purple-star
+        Recipients in the cc or bcc field: cc: or bcc:, e.g. cc:david
+        Search for messages sent during a certain time period: after:, before:, older:, newer:, e.g. after:2004/04/16, before:2004/04/18
+        Search for messages older or newer than a time period using d (day), m (month), and y (year): older_than:, newer_than:, e.g. newer_than:2d
+        Search by email for delivered messages: deliveredto:, e.g. deliveredto:username@gmail.com
+        Messages in a certain category: category:, e.g. category:updates
+        Messages larger than a certain size in bytes: size:, e.g. size:1000000
+        Messages larger or smaller than a certain size in bytes: larger:, smaller:, e.g. larger:10M
+        Results that match a word exactly: +, e.g. +unicorn
+        Messages that have or don't have a label: has:userlabels, has:nouserlabels, e.g. has:nouserlabels
+
+        Using only the above information, construct gmail search syntax.
+
+        Output only the search syntax. Do not explain. 
+        Search syntax should contain quoted words only if they are quoted in the query. There should be no other quoted words in the search syntax.
+        Any words with symbols like +, - are to be used as is.
+        Do not use operators from:, to:, cc:, subject: unless specified in query.
+        date should always be specified in the format yyyy/mm/dd
+        For relative time or date, calculate from today's date.
+    </textarea>
+
+    <script src="settings.js"></script>
+  </body>
+</html>
