@@ -12,12 +12,12 @@
       "run_at": "document_end"
     }
   ],
+  "permissions": [
+    "storage"
+  ],
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": [
-    "scripting", "storage"
-  ],
   "host_permissions": [
     "https://mail.google.com/"
   ],

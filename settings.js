@@ -6,7 +6,7 @@ document.getElementById('settings-form').addEventListener('submit', function (e)
   const model = document.getElementById('model').value;
 
   chrome.storage.sync.set({ apiKey, prompt, model }, function () {
-      alert('Settings saved!');
+      alert('Settings saved! Reload Gmail.');
   });
 });
 
@@ -33,7 +33,7 @@ chrome.storage.sync.get(['apiKey', 'prompt', 'model'], function (data) {
     document.getElementById('api-key').value = data.apiKey;
   }
   if (data.prompt !== undefined) {
-    document.getElementById('prompt').value = data.prompt; 
+    document.getElementById('prompt').value = data.prompt;
   }
   if (data.model !== undefined) {
     document.getElementById('model').value = data.model;

@@ -1,9 +1,14 @@
-import * as InboxSDK from "@inboxsdk/core";
+(() => {
 
 var apiKey;
 var prompt;
 var model;
-var sdk;
+
+const searchModal = document.createElement('dialog');
+searchModal.style.padding = '0.5rem';
+searchModal.style.border = '1px transparent';
+searchModal.style.borderRadius = '10px';
+let addedToDOM = false;
 
 chrome.storage.sync.get(["apiKey", "prompt", "model"], function (data) {
   apiKey = data.apiKey;
@@ -11,10 +16,10 @@ chrome.storage.sync.get(["apiKey", "prompt", "model"], function (data) {
   model = data.model || "gpt-3.5-turbo";
 });
 
-var div = document.createElement("div");
+var searchDiv = document.createElement("div");
 var configDiv = document.createElement("div");
 
-div.innerHTML = `
+searchDiv.innerHTML = `
 <style>
         .search-spinner {
             border: 2px solid #f3f3f3;
@@ -30,11 +35,11 @@ div.innerHTML = `
             100% { transform: rotate(360deg); }
         }
     </style>
-<div style="position: relative;width:500px"> 
+<div style="position: relative;width:500px">
   <div style="position: absolute; inset: 0; left: 0; display: flex; align-items: center; padding-left: 0.75rem; pointer-events: none;">
       <svg aria-hidden="true" style="width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path style="stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
   </div>
-  <input type="search" id="default-search" style="display: block; width: 100%; padding: 1rem; padding-left: 2.5rem; font-size: 0.875rem; color: #1a202c; border: 1px solid #cbd5e0; background-color: #f7fafc; outline-color: #3b82f6; outline-offset: 2px; placeholder-color: #a0aec0;" placeholder="from john in august 2022 about taxes" required>
+  <input type="search" id="default-search" style="display: block; width: 100%; padding: 1rem; padding-left: 2.5rem; font-size: 0.875rem; color: #1a202c; border: 1px solid #cbd5e0; border-radius: 5px;background-color: #f7fafc; outline-color: #3b82f6; outline-offset: 2px; placeholder-color: #a0aec0;" placeholder="from john in august 2022 about taxes" required>
 
   <div id="spinner-container" style="position: absolute; right: 0.625rem; bottom: 0.625rem; display: none; align-items: center; padding-right: 0.75rem;">
       <div class="search-spinner"></div>
@@ -42,7 +47,7 @@ div.innerHTML = `
 </div>`;
 
 configDiv.innerHTML = `<div style="padding: 1rem; font-size: 0.875rem; color: #b45309; background-color: #fff9db; border-radius: 0.5rem; width:500px" role="alert">
-Add your API key and prompt in the extension options and reload gmail
+Click <a id="open-settings" href="#">here</a> to Add your API key and prompt in the extension options and reload gmail
 </div>`;
 
 
@@ -68,23 +73,36 @@ function searchMail(term) {
 }
 
 function showModal() {
-  if (!apiKey || !prompt) {
-    let el = configDiv.cloneNode(true);
-    var modal = (window._modal = sdk.Widgets.showModalView({
-      el: el,
-      chrome: false,
-    }));
-  } else {
-    let el = div.cloneNode(true);
-    var modal = (window._modal = sdk.Widgets.showModalView({
-      el: el,
-      chrome: false,
-    }));
-    addSpinner(el, modal);
+  let el;
+  if (!addedToDOM) {
+    document.body.appendChild(searchModal);
+    addedToDOM = true;
   }
+  searchModal.innerHTML = '';
+  if (!apiKey || !prompt) {
+    el = configDiv.cloneNode(true);
+    addSettingsClickHandler(el);
+  } else {
+    el = searchDiv.cloneNode(true);
+    addSpinner(el);
+  }
+  searchModal.appendChild(el);
+  searchModal.showModal()
 }
 
-function addSpinner(el, modal) {
+function hideModal() {
+  searchModal.close();
+}
+
+function addSettingsClickHandler(el) {
+  const settingsLink = el.querySelector("#open-settings");
+  settingsLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    chrome.runtime.sendMessage({ action: "openSettingsPage" });
+  });
+}
+
+function addSpinner(el) {
   const searchInput = el.querySelector("#default-search");
   const spinnerContainer = el.querySelector("#spinner-container");
   searchInput.focus();
@@ -97,7 +115,7 @@ function addSpinner(el, modal) {
 
       async function search() {
         await generateSearchOperators(searchInput.value).then((searchTerm) => {
-          modal.close();
+          hideModal();
           searchMail(searchTerm);
         });
       }
@@ -115,10 +133,10 @@ function keyDownHandler(event) {
   if (cmdOrCtrl && (event.keyCode === 75 || event.keyCode === 107)) {
     event.preventDefault();
     showModal();
+  } else if (event.keyCode === 27) {
+    hideModal();
   }
 }
-
-document.addEventListener("keydown", keyDownHandler);
 
 async function generateSearchOperators(searchTerm) {
   const apiUrl = "https://api.openai.com/v1/chat/completions";
@@ -134,7 +152,7 @@ async function generateSearchOperators(searchTerm) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${apiKey}`,
   };
-  
+
   const data = JSON.stringify({
     model: model,
     messages: [{ role: "user", content: finalPrompt }],
@@ -142,7 +160,7 @@ async function generateSearchOperators(searchTerm) {
     max_tokens: 500,
     n: 1,
   });
-  
+
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: headers,
@@ -154,6 +172,6 @@ async function generateSearchOperators(searchTerm) {
   return json.choices[0].message.content.trim();
 }
 
-InboxSDK.load(2, "sdk_hello-world-1_49f6d3c710").then((inboxSDK) => {
-  window.sdk = sdk = inboxSDK;
-});
+document.addEventListener("keydown", keyDownHandler);
+
+})();

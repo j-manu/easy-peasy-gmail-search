@@ -39,11 +39,11 @@
       <input type="text" id="api-key" name="api_key" required />
       <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #718096; line-height: 1.5;">
         Generate an API Key in
-        <a href="https://platform.openai.com/account/api-keys" style="font-weight: 500; color: #3b82f6; text-decoration: none; cursor: pointer; transition: text-decoration 150ms; hover:text-decoration: underline;">
+        <a target="_blank" href="https://platform.openai.com/account/api-keys" style="font-weight: 500; color: #3b82f6; text-decoration: none; cursor: pointer; transition: text-decoration 150ms;">
             OpenAI User Settings
         </a>.
       </p>
-      
+
 
       <label for="model">Choose a model:</label>
       <select id="model" name="model" required>
@@ -115,7 +115,7 @@
 
         Using only the above information, construct gmail search syntax.
 
-        Output only the search syntax. Do not explain. 
+        Output only the search syntax. Do not explain.
         Search syntax should contain quoted words only if they are quoted in the query. There should be no other quoted words in the search syntax.
         Any words with symbols like +, - are to be used as is.
         Do not use operators from:, to:, cc:, subject: unless specified in query.
