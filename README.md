@@ -8,7 +8,7 @@ In short, convert a query like <br>
 [![Final video of fixing issues in your code in VS Code](https://img.youtube.com/vi/ypniAcE7zRU/maxresdefault.jpg)](https://youtu.be/ypniAcE7zRU)
 
 ## Installation
-This extension is not yet in Chrome Store. Download the code and follow [these steps](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked) to install it.
+Install from [Chrome Store](https://chrome.google.com/webstore/detail/easy-peasy-search-for-gma/oagnahomacdecncbipcpfhkbmcjmobfh?hl=en&authuser=0)
 
 
 ## How to use
